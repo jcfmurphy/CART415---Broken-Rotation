@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     private TankManager m_GameWinner;
 	private int m_ShooterNumber;
 	private float m_ShotTimer;
-	private float m_ShotLimit = 3f;
+	private float m_ShotLimit = 5f;
 
 
     private void Start()
