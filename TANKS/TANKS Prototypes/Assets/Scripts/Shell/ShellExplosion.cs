@@ -49,7 +49,7 @@ public class ShellExplosion : MonoBehaviour
 
 		m_ExplosionAudio.Play ();
 
-		Vector3 lightPosition = new Vector3(transform.position.x, transform.position.y + 5.0f, transform.position.z);
+		Vector3 lightPosition = new Vector3(transform.position.x, transform.position.y + 1.0f, transform.position.z);
 
 		Instantiate (m_ShotLight, lightPosition, transform.rotation);
 

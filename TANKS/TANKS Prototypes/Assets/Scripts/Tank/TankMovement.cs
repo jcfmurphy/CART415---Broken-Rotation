@@ -67,10 +67,7 @@ public class TankMovement : MonoBehaviour
 			UpdateParticleSystem (m_LeftDustTrail, false);
 			UpdateParticleSystem (m_RightDustTrail, false);
 		}
-
-		if (m_Rigidbody.velocity.magnitude > 0.0000001) {
-			print (m_Rigidbody.velocity.magnitude);
-		}
+			
 	}
 
 
