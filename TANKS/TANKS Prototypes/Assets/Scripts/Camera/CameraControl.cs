@@ -14,7 +14,7 @@ public class CameraControl : MonoBehaviour
     private Vector3 m_DesiredPosition;              
 
 
-    private void Awake()
+	protected virtual void Awake()
     {
         m_Camera = GetComponentInChildren<Camera>();
     }
