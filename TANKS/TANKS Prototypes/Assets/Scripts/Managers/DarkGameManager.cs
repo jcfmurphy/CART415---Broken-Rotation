@@ -23,7 +23,7 @@ public class DarkGameManager : MonoBehaviour
     private DarkTankManager m_GameWinner;
 	private int m_ShooterNumber;
 	private float m_ShotTimer;
-	private float m_ShotLimit = 3f;
+	private float m_ShotLimit = 6f;
 	private List<Light> m_Lights;
 
     private void Start()

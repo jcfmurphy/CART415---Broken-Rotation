@@ -4,7 +4,7 @@ public class DarkCameraControl : CameraControl
 {
 
 	private void Update() {
-		transform.Rotate (Vector3.up * Time.deltaTime * 10.0f, Space.World);
+		transform.Rotate (Vector3.up * Time.deltaTime * 15.0f, Space.World);
 	}
        
 	protected override void Awake()

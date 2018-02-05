@@ -10,12 +10,11 @@ public class DarkTankShooting : MonoBehaviour
     public AudioSource m_ShootingAudio;  
     public AudioClip m_ChargingClip;     
     public AudioClip m_FireClip;         
-	public Image m_ShooterIcon;
 	public Slider m_HealthSlider;
     public float m_MinLaunchForce = 15f; 
     public float m_MaxLaunchForce = 30f; 
     public float m_MaxChargeTime = 0.75f;
-
+	public Light m_ActiveLight;
     
     private string m_FireButton;         
     private float m_CurrentLaunchForce;  
@@ -84,17 +83,17 @@ public class DarkTankShooting : MonoBehaviour
 
 		m_CurrentLaunchForce = m_MinLaunchForce;
 
-		m_GameManager.SwitchActiveShooter ();
+		//m_GameManager.SwitchActiveShooter ();
     }
 
 	public void DeactivateShooter() {
-		m_ShooterIcon.enabled = false;
+		m_ActiveLight.enabled = false;
 		m_HealthSlider.gameObject.SetActive (false);
 		m_ActiveShooter = false;
 	}
 
 	public void ActivateShooter() {
-		m_ShooterIcon.enabled = true;
+		m_ActiveLight.enabled = true;
 		m_HealthSlider.gameObject.SetActive (true);
 		m_ActiveShooter = true;
 	}
