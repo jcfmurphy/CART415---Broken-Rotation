@@ -52,7 +52,11 @@ public class DarkShellExplosion : MonoBehaviour
 
 		m_ExplosionAudio.Play ();
 
+		Vector3 posOffset = transform.rotation * Vector3.back;
+
 		Vector3 lightPosition = new Vector3(transform.position.x, transform.position.y + 1.0f, transform.position.z);
+
+		lightPosition += posOffset;
 
 		m_GameManager.DropLight (lightPosition, transform.rotation);
 
