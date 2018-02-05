@@ -10,11 +10,14 @@ public class DarkShellExplosion : MonoBehaviour
     public float m_ExplosionForce = 1000f;            
     public float m_MaxLifeTime = 2f;                  
     public float m_ExplosionRadius = 5f;              
-
+	private DarkGameManager m_GameManager;
 
     private void Start()
     {
         Destroy(gameObject, m_MaxLifeTime);
+
+		GameObject GameManagerObject = GameObject.Find ("GameManager");
+		m_GameManager = GameManagerObject.GetComponent<DarkGameManager> ();
     }
 
 
@@ -51,7 +54,7 @@ public class DarkShellExplosion : MonoBehaviour
 
 		Vector3 lightPosition = new Vector3(transform.position.x, transform.position.y + 1.0f, transform.position.z);
 
-		Instantiate (m_ShotLight, lightPosition, transform.rotation);
+		m_GameManager.DropLight (lightPosition, transform.rotation);
 
 		Destroy (m_ExplosionParticles.gameObject, m_ExplosionParticles.duration);
 

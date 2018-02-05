@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class DarkGameManager : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class DarkGameManager : MonoBehaviour
     public Text m_MessageText;              
     public GameObject m_TankPrefab;         
     public DarkTankManager[] m_Tanks;
-
+	public Light m_ShotLight;
 
 
     private int m_RoundNumber;              
@@ -23,7 +24,7 @@ public class DarkGameManager : MonoBehaviour
 	private int m_ShooterNumber;
 	private float m_ShotTimer;
 	private float m_ShotLimit = 3f;
-
+	private List<Light> m_Lights;
 
     private void Start()
     {
@@ -34,6 +35,8 @@ public class DarkGameManager : MonoBehaviour
         SetCameraTargets();
 
 		m_ShooterNumber = 0;
+
+		m_Lights = new List<Light>();
 
         StartCoroutine(GameLoop());
     }
@@ -238,5 +241,16 @@ public class DarkGameManager : MonoBehaviour
 		m_Tanks [m_ShooterNumber].ActivateShooter ();
 
 		m_ShotTimer = 0f;
+	}
+
+	public void DropLight(Vector3 lightPos, Quaternion lightRot) {
+
+		m_Lights.Add(Instantiate (m_ShotLight, lightPos, lightRot));
+
+		while (m_Lights.Count > 10) {
+			Light destroyLight = m_Lights [0];
+			m_Lights.Remove (destroyLight);
+			Destroy (destroyLight.gameObject);
+		}
 	}
 }
