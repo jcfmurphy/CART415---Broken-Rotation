@@ -21,8 +21,8 @@ public class DarkTankShooting : MonoBehaviour
     private float m_ChargeSpeed;         
     private bool m_Fired;
 	private bool m_ActiveShooter = false;
-	private GameObject m_GameManagerObject;
-	private DarkGameManager m_GameManager;
+	//private GameObject m_GameManagerObject;
+	//private DarkGameManager m_GameManager;
 
 
     private void OnEnable()
@@ -38,8 +38,8 @@ public class DarkTankShooting : MonoBehaviour
 
         m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
 
-		m_GameManagerObject = GameObject.Find ("GameManager");
-		m_GameManager = m_GameManagerObject.GetComponent<DarkGameManager> ();
+		//m_GameManagerObject = GameObject.Find ("GameManager");
+		//m_GameManager = m_GameManagerObject.GetComponent<DarkGameManager> ();
     }
     
 

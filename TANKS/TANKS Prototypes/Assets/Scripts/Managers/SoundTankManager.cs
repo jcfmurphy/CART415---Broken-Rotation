@@ -12,12 +12,12 @@ public class SoundTankManager
     [HideInInspector] public int m_Wins;                     
 
 
-    private SoundTankMovement m_Movement;       
-    private SoundTankShooting m_Shooting;
-    private GameObject m_CanvasGameObject;
+	protected SoundTankMovement m_Movement;       
+	protected SoundTankShooting m_Shooting;
+	protected GameObject m_CanvasGameObject;
 
 
-    public void Setup()
+	public virtual void Setup()
     {
         m_Movement = m_Instance.GetComponent<SoundTankMovement>();
         m_Shooting = m_Instance.GetComponent<SoundTankShooting>();

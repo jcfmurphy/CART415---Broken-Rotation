@@ -28,7 +28,7 @@ public class SoundGameManager : MonoBehaviour
         m_EndWait = new WaitForSeconds(m_EndDelay);
 
         SpawnAllTanks();
-        SetCameraTargets();
+        //SetCameraTargets();
 
         StartCoroutine(GameLoop());
     }
@@ -45,7 +45,7 @@ public class SoundGameManager : MonoBehaviour
         }
     }
 
-
+	/*
     private void SetCameraTargets()
     {
         Transform[] targets = new Transform[m_Tanks.Length];
@@ -57,7 +57,7 @@ public class SoundGameManager : MonoBehaviour
 
         m_CameraControl.m_Targets = targets;
     }
-
+	*/
 
     private IEnumerator GameLoop()
     {
