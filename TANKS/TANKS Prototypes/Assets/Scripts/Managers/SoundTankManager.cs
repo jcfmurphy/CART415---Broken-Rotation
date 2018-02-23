@@ -1,66 +1,52 @@
 ﻿using System;
 using UnityEngine;
+using System.Collections.Generic;
 
 [Serializable]
-public class SoundTankManager
+public class SoundTankManager : TankManager
 {
-    public Color m_PlayerColor;            
-    public Transform m_SpawnPoint;         
-    [HideInInspector] public int m_PlayerNumber;             
-    [HideInInspector] public string m_ColoredPlayerText;
-    [HideInInspector] public GameObject m_Instance;          
-    [HideInInspector] public int m_Wins;                     
+	public override void SetupPlayerTank ()
+	{
+		// Get references to the components.
 
+		m_Movement = m_Instance.GetComponent<SoundTankMovement> ();
+		m_Shooting = m_Instance.GetComponent<SoundTankShooting> ();
+		m_CanvasGameObject = m_Instance.GetComponentInChildren<Canvas> ().gameObject;
 
-	protected SoundTankMovement m_Movement;       
-	protected SoundTankShooting m_Shooting;
-	protected GameObject m_CanvasGameObject;
+		// Set the player numbers to be consistent across the scripts.
+		m_Movement.m_PlayerNumber = m_PlayerNumber;
+		m_Shooting.m_PlayerNumber = m_PlayerNumber;
 
+		// Create a string using the correct color that says 'PLAYER 1' etc based on the tank's color and the player's number.
+		m_ColoredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGB(m_PlayerColor) + ">PLAYER " + m_PlayerNumber + "</color>";
 
-	public virtual void Setup()
-    {
-        m_Movement = m_Instance.GetComponent<SoundTankMovement>();
-        m_Shooting = m_Instance.GetComponent<SoundTankShooting>();
-        m_CanvasGameObject = m_Instance.GetComponentInChildren<Canvas>().gameObject;
+		// Get all of the renderers of the tank.
+		MeshRenderer[] renderers = m_Instance.GetComponentsInChildren<MeshRenderer> ();
 
-        m_Movement.m_PlayerNumber = m_PlayerNumber;
-        m_Shooting.m_PlayerNumber = m_PlayerNumber;
+		// Go through all the renderers...
+		for (int i = 0; i < renderers.Length; i++)
+		{
+			// ... set their material color to the color specific to this tank.
+			renderers[i].material.color = m_PlayerColor;
+		}
+	}
 
-        m_ColoredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGB(m_PlayerColor) + ">PLAYER " + m_PlayerNumber + "</color>";
+	public override void SetupAI(List<Transform> wayPointList)
+	{
+		m_StateController = m_Instance.GetComponent<StateController> ();
+		m_StateController.SetupAI (true, wayPointList);
 
-        MeshRenderer[] renderers = m_Instance.GetComponentsInChildren<MeshRenderer>();
+		m_CanvasGameObject = m_Instance.GetComponentInChildren<Canvas> ().gameObject;
+		m_ColoredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGB(m_PlayerColor) + ">PLAYER " + m_PlayerNumber + "</color>";
 
-        for (int i = 0; i < renderers.Length; i++)
-        {
-            renderers[i].material.color = m_PlayerColor;
-        }
-    }
+		// Get all of the renderers of the tank.
+		MeshRenderer[] renderers = m_Instance.GetComponentsInChildren<MeshRenderer> ();
 
-
-    public void DisableControl()
-    {
-        m_Movement.enabled = false;
-        m_Shooting.enabled = false;
-
-        m_CanvasGameObject.SetActive(false);
-    }
-
-
-    public void EnableControl()
-    {
-        m_Movement.enabled = true;
-        m_Shooting.enabled = true;
-
-        m_CanvasGameObject.SetActive(true);
-    }
-
-
-    public void Reset()
-    {
-        m_Instance.transform.position = m_SpawnPoint.position;
-        m_Instance.transform.rotation = m_SpawnPoint.rotation;
-
-        m_Instance.SetActive(false);
-        m_Instance.SetActive(true);
-    }
+		// Go through all the renderers...
+		for (int i = 0; i < renderers.Length; i++)
+		{
+			// ... set their material color to the color specific to this tank.
+			renderers[i].material.color = m_PlayerColor;
+		}
+	}
 }

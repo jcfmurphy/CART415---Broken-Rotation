@@ -60,7 +60,7 @@ public class DarkShellExplosion : MonoBehaviour
 
 		m_GameManager.DropLight (lightPosition, transform.rotation);
 
-		Destroy (m_ExplosionParticles.gameObject, m_ExplosionParticles.duration);
+		Destroy (m_ExplosionParticles.gameObject, m_ExplosionParticles.main.duration);
 
 		Destroy (gameObject);
     }
