@@ -42,10 +42,12 @@ public class StateController : MonoBehaviour {
 	}
 
 	void Update() {
-		if (!aiActive) {
+
+		if (!aiActive) 
 			return;
-			currentState.UpdateState (this);
-		}
+			
+		currentState.UpdateState (this);
+
 	}
 
 	void OnDrawGizmos() {

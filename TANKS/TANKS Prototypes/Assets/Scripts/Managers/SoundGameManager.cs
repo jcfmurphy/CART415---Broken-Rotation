@@ -6,9 +6,10 @@ using System.Collections.Generic;
 
 public class SoundGameManager : MonoBehaviour
 {
+ 
 	public int m_NumRoundsToWin = 5;        
 	public float m_StartDelay = 3f;         
-	public float m_EndDelay = 3f;           
+	public float m_EndDelay = 3f;            
 	public Text m_MessageText;              
 	public GameObject[] m_TankPrefabs;         
 	public SoundTankManager[] m_Tanks;    
@@ -19,10 +20,9 @@ public class SoundGameManager : MonoBehaviour
 	protected WaitForSeconds m_StartWait;     
 	protected WaitForSeconds m_EndWait;       
 	protected TankManager m_RoundWinner;
-	protected TankManager m_GameWinner;       
+	protected TankManager m_GameWinner;      
 
-
-	protected virtual void Start()
+	protected void Start()
 	{
 		m_StartWait = new WaitForSeconds(m_StartDelay);
 		m_EndWait = new WaitForSeconds(m_EndDelay);
@@ -33,7 +33,7 @@ public class SoundGameManager : MonoBehaviour
 	}
 
 
-	protected virtual void SpawnAllTanks()
+	protected void SpawnAllTanks()
 	{
 		for (int i = 0; i < m_Tanks.Length; i++)
 		{
@@ -196,5 +196,4 @@ public class SoundGameManager : MonoBehaviour
 			m_Tanks[i].DisableControl();
 		}
 	}
-
 }
