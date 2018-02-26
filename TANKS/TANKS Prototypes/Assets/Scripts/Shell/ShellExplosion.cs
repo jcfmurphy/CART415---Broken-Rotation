@@ -11,7 +11,7 @@ public class ShellExplosion : MonoBehaviour
     public float m_ExplosionRadius = 5f;              
 
 
-    private void Start()
+	protected virtual void Start()
     {
         Destroy(gameObject, m_MaxLifeTime);
     }

@@ -45,7 +45,7 @@ public class StateController : MonoBehaviour {
 
 		if (!aiActive) 
 			return;
-			
+
 		currentState.UpdateState (this);
 
 	}

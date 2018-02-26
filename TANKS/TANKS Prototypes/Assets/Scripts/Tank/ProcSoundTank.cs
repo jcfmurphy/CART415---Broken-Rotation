@@ -9,7 +9,6 @@ public class ProcSoundTank : MonoBehaviour {
 
 	public float cutoffOn = 600;
 	public float cutoffOff = 200;
-
 	public bool engineOn;
 
 	private float cutoffEase = 0.2f;

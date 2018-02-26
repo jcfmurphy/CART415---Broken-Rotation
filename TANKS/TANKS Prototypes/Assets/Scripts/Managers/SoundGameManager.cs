@@ -6,46 +6,100 @@ using System.Collections.Generic;
 
 public class SoundGameManager : MonoBehaviour
 {
- 
-	public int m_NumRoundsToWin = 5;        
+
 	public float m_StartDelay = 3f;         
-	public float m_EndDelay = 3f;            
+	public float m_EndDelay = 3f; 
+	public float m_SpawnDelay = 3f;
+	public int m_SpawnsRemaining = 30;
 	public Text m_MessageText;              
-	public GameObject[] m_TankPrefabs;         
-	public SoundTankManager[] m_Tanks;    
-	public List<Transform> wayPointsForAI;
+	public GameObject m_CitizenPrefab;
+	public GameObject m_KingPrefab;
+	public Transform m_KingSpawnPoint;
+	public List<Transform> m_SpawnPoints;
+	public Color[] m_CitizenColors = new Color[3];
+	public SoundCameraControl m_CameraControl;
 
-
-	protected int m_RoundNumber;              
+	public float m_SpawnTimer = 0f;
+	protected Vector3 m_CheckBoxSize = new Vector3(1.25f, 1.25f, 1.25f);
+	protected SoundTankManager[] m_CitizenTanks;
+	protected SoundTankManager m_KingTank;       
 	protected WaitForSeconds m_StartWait;     
 	protected WaitForSeconds m_EndWait;       
-	protected TankManager m_RoundWinner;
-	protected TankManager m_GameWinner;      
+	protected float m_AudioTime = -2.5f;
 
 	protected void Start()
 	{
 		m_StartWait = new WaitForSeconds(m_StartDelay);
 		m_EndWait = new WaitForSeconds(m_EndDelay);
 
-		SpawnAllTanks();
+		m_KingTank = new SoundTankManager ();
+		m_KingTank.m_PlayerNumber = 1;
+		m_KingTank.m_Instance = 
+			Instantiate(m_KingPrefab, m_KingSpawnPoint.position, m_KingSpawnPoint.rotation) as GameObject;
+		m_KingTank.m_IsAITank = false;
+		m_KingTank.m_PlayerColor = new Color (0.2275f, 0.2275f, 0.2275f);
+		m_KingTank.SetupKingTank ();
+
+		m_CameraControl.m_Target = m_KingTank.m_Instance.transform;
+
+		m_CitizenTanks = new SoundTankManager[m_SpawnsRemaining];
+		for (int i = 0; i < m_CitizenTanks.Length; i++) {
+			m_CitizenTanks[i] = new SoundTankManager();
+		}
 
 		StartCoroutine(GameLoop());
 	}
 
 
-	protected void SpawnAllTanks()
-	{
-		for (int i = 0; i < m_Tanks.Length; i++)
-		{
-			m_Tanks[i].m_Instance =
-				Instantiate(m_TankPrefabs[i], m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
-			m_Tanks[i].m_PlayerNumber = i + 1;
-			m_Tanks[i].Setup(wayPointsForAI);
+	protected void Update() {
+		m_SpawnTimer += Time.deltaTime;
 
-			if (i == 0) {
-				GameObject CameraRig = GameObject.Find ("Camera Rig");
-				CameraRig.transform.SetParent (m_Tanks[i].m_Instance.transform);
+		if (m_SpawnTimer >= m_SpawnDelay && m_SpawnsRemaining > 0) {
+			SpawnTank ();
+		}
+
+		m_AudioTime += Time.deltaTime;
+	}
+
+
+	protected void SpawnTank()
+	{
+		Transform tempSpawnPoint = GetSpawnPoint ();
+
+		if (tempSpawnPoint != null) {
+			m_CitizenTanks [m_SpawnsRemaining - 1].m_Instance = 
+			Instantiate (m_CitizenPrefab, tempSpawnPoint.position, tempSpawnPoint.rotation) as GameObject;
+			m_CitizenTanks [m_SpawnsRemaining - 1].m_IsAITank = true;
+
+			int randColor = Random.Range (0, 3);
+			m_CitizenTanks [m_SpawnsRemaining - 1].m_PlayerColor = m_CitizenColors [randColor];
+			m_CitizenTanks [m_SpawnsRemaining - 1].SetupAI (m_SpawnPoints);
+
+			AudioSource tempSource = m_CitizenTanks [m_SpawnsRemaining - 1].m_Instance.GetComponent<AudioSource> ();
+			tempSource.time = m_AudioTime;
+
+			m_SpawnsRemaining -= 1;
+			m_SpawnTimer = 0f;
+		}
+	}
+
+
+	protected Transform GetSpawnPoint() {
+		List<Transform> tempSpawnPoints = new List<Transform>();
+
+		for (int i = 0; i < m_SpawnPoints.Count; i++) {
+			Vector3 checkLocation = new Vector3 (m_SpawnPoints [i].transform.position.x, m_SpawnPoints [i].transform.position.y + 1.3f, m_SpawnPoints [i].transform.position.z);
+
+			if (!Physics.CheckBox(checkLocation, m_CheckBoxSize, m_SpawnPoints[i].transform.rotation)) {
+				tempSpawnPoints.Add (m_SpawnPoints [i]);
 			}
+		}
+
+		if (tempSpawnPoints.Count > 0) {
+			int spawnRandom = Random.Range (0, tempSpawnPoints.Count);
+			return tempSpawnPoints [spawnRandom];
+		} else {
+			return null;
 		}
 	}
 
@@ -56,24 +110,13 @@ public class SoundGameManager : MonoBehaviour
 		yield return StartCoroutine(RoundPlaying());
 		yield return StartCoroutine(RoundEnding());
 
-		if (m_GameWinner != null)
-		{
-			SceneManager.LoadScene(0);
-		}
-		else
-		{
-			StartCoroutine(GameLoop());
-		}
+		SceneManager.LoadScene(1);
 	}
 
 
 	protected IEnumerator RoundStarting()
 	{
-		ResetAllTanks ();
 		DisableTankControl ();
-
-		m_RoundNumber++;
-		m_MessageText.text = "ROUND " + m_RoundNumber;
 
 		yield return m_StartWait;
 	}
@@ -85,115 +128,62 @@ public class SoundGameManager : MonoBehaviour
 
 		m_MessageText.text = string.Empty;
 
-		while (!OneTankLeft()) {
+		while (!RoundOver()) {
 			yield return null;
 		}
 	}
-
-
+		
 	protected IEnumerator RoundEnding()
 	{
-		DisableTankControl ();
-
-		m_RoundWinner = null;
-
-		m_RoundWinner = GetRoundWinner ();
-
-		if (m_RoundWinner != null) {
-			m_RoundWinner.m_Wins++;
-		}
-
-		m_GameWinner = GetGameWinner ();
-
 		string message = EndMessage ();
 		m_MessageText.text = message;
+
+		DisableTankControl ();
 
 		yield return m_EndWait;
 	}
 
 
-	protected bool OneTankLeft()
-	{
-		int numTanksLeft = 0;
+	protected bool RoundOver() {
+		if (!m_KingTank.m_Instance.activeSelf) {
+			return true;
+		} else if (m_SpawnsRemaining > 0) {
+			return false;
+		} else {
 
-		for (int i = 0; i < m_Tanks.Length; i++)
-		{
-			if (m_Tanks[i].m_Instance.activeSelf)
-				numTanksLeft++;
+			int numTanksLeft = 0;
+
+			for (int i = 0; i < m_CitizenTanks.Length; i++) {
+				if (m_CitizenTanks [i].m_Instance.activeSelf)
+					numTanksLeft++;
+			}
+
+			return numTanksLeft < 1;
 		}
-
-		return numTanksLeft <= 1;
-	}
-
-
-	protected TankManager GetRoundWinner()
-	{
-		for (int i = 0; i < m_Tanks.Length; i++)
-		{
-			if (m_Tanks[i].m_Instance.activeSelf)
-				return m_Tanks[i];
-		}
-
-		return null;
-	}
-
-
-	protected TankManager GetGameWinner()
-	{
-		for (int i = 0; i < m_Tanks.Length; i++)
-		{
-			if (m_Tanks[i].m_Wins == m_NumRoundsToWin)
-				return m_Tanks[i];
-		}
-
-		return null;
 	}
 
 
 	protected string EndMessage()
 	{
-		string message = "DRAW!";
+		string message;
 
-		if (m_RoundWinner != null)
-			message = m_RoundWinner.m_ColoredPlayerText + " WINS THE ROUND!";
-
-		message += "\n\n\n\n";
-
-		for (int i = 0; i < m_Tanks.Length; i++)
-		{
-			message += m_Tanks[i].m_ColoredPlayerText + ": " + m_Tanks[i].m_Wins + " WINS\n";
+		if (m_KingTank.m_Instance.activeSelf) {
+			message = "YOU DEFEATED THE REVOLUTIONARIES!";
+		} else {
+			message = "THE KING IS DEAD!";
 		}
-
-		if (m_GameWinner != null)
-			message = m_GameWinner.m_ColoredPlayerText + " WINS THE GAME!";
 
 		return message;
 	}
-
-
-	protected void ResetAllTanks()
-	{
-		for (int i = 0; i < m_Tanks.Length; i++)
-		{
-			m_Tanks[i].Reset();
-		}
-	}
-
-
+		
 	protected void EnableTankControl()
 	{
-		for (int i = 0; i < m_Tanks.Length; i++)
-		{
-			m_Tanks[i].EnableControl();
-		}
+		m_KingTank.EnableControl();
 	}
 
 
 	protected void DisableTankControl()
 	{
-		for (int i = 0; i < m_Tanks.Length; i++)
-		{
-			m_Tanks[i].DisableControl();
-		}
+		m_KingTank.DisableControl();
 	}
 }
