@@ -5,12 +5,19 @@ public class KingTankHealth : TankHealth
 {
 
 	public GameObject m_Crown;
+	public Slider m_VolumeSlider;  
+	public Image m_VolumeFillImage;      
 
 	private float[] m_samples = new float[1024];
 	private GameObject[] m_SoundTanks;
 	private float m_LowVolCutoff = -25f;
 	private float m_HighVolCutoff = 0f;
 	private float m_DamageMultiplier = 1.6f;
+
+	private float m_MaxVolume;
+	private float m_SliderMin = -40f;
+	private float m_SliderMax = 0;
+  
 
 	public void start() {
 
@@ -21,13 +28,22 @@ public class KingTankHealth : TankHealth
 
 		float damage = 0;
 
+		float maxVol = -100;
+
 		foreach (GameObject soundTank in m_SoundTanks) {
 			float tempVolume = GetVolume (soundTank);
 			damage += GetDamage (tempVolume);
+			if (tempVolume > maxVol) {
+				maxVol = tempVolume;
+			}
 		}
 
+		m_MaxVolume = maxVol;
+		print (m_MaxVolume);
+
 		TakeDamage (damage);
-		print (damage);
+
+		SetVolumeUI ();
 	}
 
 
@@ -35,6 +51,7 @@ public class KingTankHealth : TankHealth
 		AudioSource tempAudio = soundTank.GetComponent<AudioSource> ();
 		tempAudio.GetOutputData (m_samples, 0);
 		float sqrsum = 0;
+		float maxVol = -100f;
 
 		for (int i = 0; i < m_samples.Length; i++) {
 			sqrsum += m_samples [i] * m_samples [i];
@@ -56,6 +73,25 @@ public class KingTankHealth : TankHealth
 		} else {
 			return Time.deltaTime;
 		}
+	}
+
+
+
+	private void SetVolumeUI() {
+		float sliderValue;
+
+		if (m_MaxVolume < m_SliderMax) {
+			sliderValue = (m_MaxVolume - m_SliderMin) / (m_SliderMax - m_SliderMin) * 100f;
+			if (sliderValue < 5.0f) {
+				sliderValue = 5f;
+			}
+		} else {
+			sliderValue = 100f;
+		}
+
+		m_VolumeSlider.value = sliderValue;
+
+		m_VolumeFillImage.color = Color.Lerp (m_FullHealthColor, m_ZeroHealthColor, sliderValue / 100f);
 	}
 
 
