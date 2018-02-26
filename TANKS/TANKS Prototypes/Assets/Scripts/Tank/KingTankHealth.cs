@@ -51,7 +51,6 @@ public class KingTankHealth : TankHealth
 		AudioSource tempAudio = soundTank.GetComponent<AudioSource> ();
 		tempAudio.GetOutputData (m_samples, 0);
 		float sqrsum = 0;
-		float maxVol = -100f;
 
 		for (int i = 0; i < m_samples.Length; i++) {
 			sqrsum += m_samples [i] * m_samples [i];
@@ -91,7 +90,11 @@ public class KingTankHealth : TankHealth
 
 		m_VolumeSlider.value = sliderValue;
 
-		m_VolumeFillImage.color = Color.Lerp (m_FullHealthColor, m_ZeroHealthColor, sliderValue / 100f);
+		if (sliderValue < 37f) {
+			m_VolumeFillImage.color = m_FullHealthColor;
+		} else {
+			m_VolumeFillImage.color = Color.Lerp (m_FullHealthColor, m_ZeroHealthColor, sliderValue / 100f);
+		}
 	}
 
 

@@ -110,7 +110,7 @@ public class SoundGameManager : MonoBehaviour
 		yield return StartCoroutine(RoundPlaying());
 		yield return StartCoroutine(RoundEnding());
 
-		SceneManager.LoadScene(1);
+		SceneManager.LoadScene(0);
 	}
 
 
