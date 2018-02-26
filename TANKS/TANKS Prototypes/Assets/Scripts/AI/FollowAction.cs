@@ -15,9 +15,12 @@ public class FollowAction : Action {
 	private void Follow (StateController controller) {
 
 		GameObject followObject = GameObject.Find ("Sound King Tank(Clone)");
-		followTarget = followObject.transform;
 
-		controller.navMeshAgent.destination = followTarget.position;
-		controller.navMeshAgent.isStopped = false;
+		if (followObject != null) {
+			followTarget = followObject.transform;
+
+			controller.navMeshAgent.destination = followTarget.position;
+			controller.navMeshAgent.isStopped = false;
+		}
 	}
 }
