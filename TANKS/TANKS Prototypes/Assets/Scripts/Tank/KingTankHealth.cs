@@ -15,7 +15,7 @@ public class KingTankHealth : TankHealth
 	private float m_DamageMultiplier = 1.6f;
 
 	private float m_MaxVolume;
-	private float m_SliderMin = -40f;
+	private float m_SliderMin = -50f;
 	private float m_SliderMax = 0;
   
 
@@ -90,7 +90,7 @@ public class KingTankHealth : TankHealth
 
 		m_VolumeSlider.value = sliderValue;
 
-		if (sliderValue < 37f) {
+		if (sliderValue < 50f) {
 			m_VolumeFillImage.color = m_FullHealthColor;
 		} else {
 			m_VolumeFillImage.color = Color.Lerp (m_FullHealthColor, m_ZeroHealthColor, sliderValue / 100f);

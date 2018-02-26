@@ -18,6 +18,7 @@ public class SoundGameManager : MonoBehaviour
 	public List<Transform> m_SpawnPoints;
 	public Color[] m_CitizenColors = new Color[3];
 	public SoundCameraControl m_CameraControl;
+	public AudioSource m_ViveLaFrance;
 
 	public float m_SpawnTimer = 0f;
 	protected Vector3 m_CheckBoxSize = new Vector3(1.25f, 1.25f, 1.25f);
@@ -139,6 +140,8 @@ public class SoundGameManager : MonoBehaviour
 		m_MessageText.text = message;
 
 		DisableTankControl ();
+
+		m_ViveLaFrance.PlayDelayed (1f);
 
 		yield return m_EndWait;
 	}
