@@ -4,27 +4,35 @@ using UnityEngine;
 
 public class RotateCube : MonoBehaviour {
 
-	private float m_YRotateValue;
-	private float m_XRotateValue;
-	private float m_RotateSpeed = 180f;
+	private Quaternion m_TargetRotation;
+	private float m_RotateSpeed = 10f;
 	private Transform m_Transform;
 
 
 	// Use this for initialization
 	void Start () {
 		m_Transform = this.gameObject.GetComponent<Transform> ();
+		m_TargetRotation = Quaternion.LookRotation(Vector3.forward);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		m_XRotateValue = Input.GetAxis ("Vertical2");
-		m_YRotateValue = Input.GetAxis ("Horizontal2");
+		if (Input.GetKeyDown ("1")) {
+			m_TargetRotation = Quaternion.LookRotation(Vector3.forward);
+		} else if (Input.GetKeyDown ("2")) {
+			m_TargetRotation = Quaternion.LookRotation(Vector3.left);
+		} else if (Input.GetKeyDown ("3")) {
+			m_TargetRotation = Quaternion.LookRotation(Vector3.back);
+		} else if (Input.GetKeyDown ("4")) {
+			m_TargetRotation = Quaternion.LookRotation(Vector3.right);
+		} else if (Input.GetKeyDown ("5")) {
+			m_TargetRotation = Quaternion.LookRotation(Vector3.up);
+		} else if (Input.GetKeyDown ("6")) {
+			m_TargetRotation = Quaternion.LookRotation(Vector3.down);
+		}
+	}
 
-		float xTurn = m_XRotateValue * m_RotateSpeed * Time.deltaTime;
-		float yTurn = m_YRotateValue * m_RotateSpeed * Time.deltaTime;
-
-		Vector3 turnRotation = new Vector3 (xTurn, yTurn, 0f);
-
-		m_Transform.Rotate (turnRotation, Space.World);
+	void FixedUpdate() {
+		m_Transform.rotation = Quaternion.Slerp(m_Transform.rotation, m_TargetRotation, Time.deltaTime * m_RotateSpeed);
 	}
 }
