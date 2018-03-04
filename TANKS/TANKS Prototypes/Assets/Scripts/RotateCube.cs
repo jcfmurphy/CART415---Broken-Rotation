@@ -5,18 +5,18 @@ using UnityEngine;
 public class RotateCube : MonoBehaviour {
 
 	private Quaternion m_TargetRotation;
-	private float m_RotateSpeed = 10f;
+	private float m_RotateSpeed = 5f;
 	private Transform m_Transform;
 
 
 	// Use this for initialization
-	void Start () {
+	private void Start () {
 		m_Transform = this.gameObject.GetComponent<Transform> ();
 		m_TargetRotation = Quaternion.LookRotation(Vector3.forward);
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	private void Update () {
 		if (Input.GetKeyDown ("1")) {
 			m_TargetRotation = Quaternion.LookRotation(Vector3.forward);
 		} else if (Input.GetKeyDown ("2")) {
@@ -32,7 +32,11 @@ public class RotateCube : MonoBehaviour {
 		}
 	}
 
-	void FixedUpdate() {
+	private void FixedUpdate() {
 		m_Transform.rotation = Quaternion.Slerp(m_Transform.rotation, m_TargetRotation, Time.deltaTime * m_RotateSpeed);
+	}
+
+	public void SetTarget(Vector3 targetVector) {
+		m_TargetRotation = Quaternion.LookRotation(targetVector);
 	}
 }
