@@ -50,44 +50,39 @@ public class Portal : MonoBehaviour {
 
 		if (tankCollider.gameObject.tag == "PortalCollider") {
 
-			WarpedBool hasWarped = tankCollider.GetComponent<WarpedBool> ();
+			Warp (tankCollider);
 
-			if (!hasWarped.GetWarped ()) {
+		}
+	}
 
-				Transform tankTransform = tankCollider.gameObject.transform.parent.transform;
+
+	void Warp(Collider tankCollider) {
 		
-				Vector3 positionOffset = tankTransform.position - m_Transform.position;
+		WarpedBool hasWarped = tankCollider.GetComponent<WarpedBool> ();
 
-				positionOffset = Quaternion.AngleAxis (90f, m_Transform.up) * positionOffset;
+		if (!hasWarped.GetWarped ()) {
 
-				tankTransform.position = m_LinkedTransform.position + positionOffset;
+			Transform tankTransform = tankCollider.gameObject.transform.parent.transform;
 
-				tankTransform.RotateAround (tankTransform.position, m_Transform.up, 90f);
+			Vector3 positionOffset = tankTransform.position - m_Transform.position;
 
-				tankTransform.position += m_Transform.up;
+			positionOffset = Quaternion.AngleAxis (90f, m_Transform.up) * positionOffset;
 
-				hasWarped.SetWarped (true);
+			tankTransform.position = m_LinkedTransform.position + positionOffset;
 
-				SetCubeTarget (m_LinkedPortal.m_CubeSide.m_RotateVector);
+			tankTransform.RotateAround (tankTransform.position, m_Transform.up, 90f);
 
-				Glow ();
+			tankTransform.position += m_Transform.up;
 
-				m_LinkedPortal.Glow();
-			}
+			hasWarped.SetWarped (true);
+
+			SetCubeTarget (m_LinkedPortal.m_CubeSide.m_RotateVector);
+
+			Glow ();
+
+			m_LinkedPortal.Glow();
 		}
 	}
-
-
-	void OnTriggerExit(Collider tankCollider) {
-
-		if (tankCollider.gameObject.tag == "PortalCollider") {
-
-			WarpedBool hasWarped = tankCollider.GetComponent<WarpedBool> ();
-
-			hasWarped.SetWarped (false);
-		}
-	}
-
 
 	void SetCubeTarget (Vector3 targetVector) {
 		m_Cube.SetTarget (targetVector);

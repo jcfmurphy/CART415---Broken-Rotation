@@ -10,6 +10,12 @@ public class WarpedBool : MonoBehaviour {
 	void Start () {
 		m_Warped = false;
 	}
+
+	void Update() {
+		if (m_Warped) {
+			m_Warped = false;
+		}
+	}
 	
 	public void SetWarped (bool hasWarped) {
 		m_Warped = hasWarped;
@@ -18,4 +24,5 @@ public class WarpedBool : MonoBehaviour {
 	public bool GetWarped() {
 		return m_Warped;
 	}
+		
 }

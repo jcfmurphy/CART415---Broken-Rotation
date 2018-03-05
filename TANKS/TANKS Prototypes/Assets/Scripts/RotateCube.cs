@@ -5,7 +5,7 @@ using UnityEngine;
 public class RotateCube : MonoBehaviour {
 
 	private Quaternion m_TargetRotation;
-	private float m_RotateSpeed = 5f;
+	private float m_RotateSpeed = 10f;
 	private Transform m_Transform;
 
 
@@ -18,17 +18,17 @@ public class RotateCube : MonoBehaviour {
 	// Update is called once per frame
 	private void Update () {
 		if (Input.GetKeyDown ("1")) {
-			m_TargetRotation = Quaternion.LookRotation(Vector3.forward);
+			SetTarget(Vector3.forward);
 		} else if (Input.GetKeyDown ("2")) {
-			m_TargetRotation = Quaternion.LookRotation(Vector3.left);
+			SetTarget(Vector3.left);
 		} else if (Input.GetKeyDown ("3")) {
-			m_TargetRotation = Quaternion.LookRotation(Vector3.back);
+			SetTarget(Vector3.back);
 		} else if (Input.GetKeyDown ("4")) {
-			m_TargetRotation = Quaternion.LookRotation(Vector3.right);
+			SetTarget(Vector3.right);
 		} else if (Input.GetKeyDown ("5")) {
-			m_TargetRotation = Quaternion.LookRotation(Vector3.up);
+			SetTarget(Vector3.up);
 		} else if (Input.GetKeyDown ("6")) {
-			m_TargetRotation = Quaternion.LookRotation(Vector3.down);
+			SetTarget(Vector3.down);
 		}
 	}
 
